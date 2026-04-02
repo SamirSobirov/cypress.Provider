@@ -64,7 +64,7 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
     cy.log('🟢 ШАГ 2: ЗАПОЛНЕНИЕ ФОРМЫ ПРОВАЙДЕРА');
 
     cy.get('button.app-button--primary')
-      .contains(/Добавить провайдер/i)
+      .contains(/Добавить провайдер | Add Provider/i)
       .should('be.visible')
       .click({ force: true });
       
@@ -76,7 +76,7 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
       .type(providerName, { delay: 50 });
 
 // 2. Типы продуктов (Дропдаун)
-    cy.contains('.p-select', /Выберите типы продуктов/i)
+    cy.contains('.p-select', /Выберите типы продуктов | Select product types/i)
       .should('be.visible')
       .click(); 
 
@@ -105,7 +105,7 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
 
 
    // 6. Выбор валюты
-    cy.contains('.p-select', /Валюта не выбрана|Currency not selected/i)
+    cy.contains('.p-select', /Валюта не выбрана| Currency not selected/i)
       .should('be.visible')
       .click(); 
 
