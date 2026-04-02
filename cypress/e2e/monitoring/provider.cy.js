@@ -58,13 +58,15 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
 
     cy.url({ timeout: 20000 }).should('include', '/partners');
 
+    cy.writeFile('auth_api_status.txt', '1');
+
     // =========================================================
     // ШАГ 2: СОЗДАНИЕ ПРОВАЙДЕРА (ЗАПОЛНЕНИЕ ДАННЫХ)
     // =========================================================
     cy.log('🟢 ШАГ 2: ЗАПОЛНЕНИЕ ФОРМЫ ПРОВАЙДЕРА');
 
     cy.get('button.app-button--primary')
-      .contains(/Добавить провайдер | Add Provider/i)
+      .contains(/Добавить провайдер|Add Provider/i)
       .should('be.visible')
       .click({ force: true });
       
@@ -75,8 +77,8 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
       .should('be.visible')
       .type(providerName, { delay: 50 });
 
-// 2. Типы продуктов (Дропдаун)
-    cy.contains('.p-select', /Выберите типы продуктов | Select product types/i)
+    // 2. Типы продуктов (Дропдаун) - УБРАНЫ ПРОБЕЛЫ В РЕГУЛЯРКЕ
+    cy.contains('.p-select', /Выберите типы продуктов|Select product types/i)
       .should('be.visible')
       .click(); 
 
@@ -85,27 +87,26 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
       .should('be.visible')
       .click();
 
- // 3. Тег 
+    // 3. Тег 
     cy.get('.p-dialog input').eq(1)
       .should('be.visible')
       .type(providerTag, { delay: 50 });
 
-    // 4. 
+    // 4. Кнопка "Продолжить" (первая)
     cy.get('button.app-button--primary')
       .contains(/Продолжить|Continue/i)
       .should('be.visible')
       .click({ force: true });
 
-    // 5. Кнопка "Продолжить"
+    // 5. Кнопка "Продолжить" (вторая)
     cy.get('.p-dialog').contains('button', /Продолжить|Continue/i)
       .should('be.visible')
       .click({ force: true });
 
     cy.log('✅ Первый шаг заполнения провайдера завершен');
 
-
-   // 6. Выбор валюты
-    cy.contains('.p-select', /Валюта не выбрана| Currency not selected/i)
+    // 6. Выбор валюты - УБРАНЫ ПРОБЕЛЫ В РЕГУЛЯРКЕ
+    cy.contains('.p-select', /Валюта не выбрана|Currency not selected/i)
       .should('be.visible')
       .click(); 
 
@@ -126,6 +127,9 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
       .click({ force: true });
 
     cy.log('✅ Провайдер успешно добавлен!');
+    
+    // ФИКСИРУЕМ УСПЕХ ШАГА 2 (Для GitHub Actions)
+    cy.writeFile('auth_api_status.txt', '2');
 
     // =========================================================
     // ШАГ 3: УДАЛЕНИЕ ПРОВАЙДЕРА
@@ -160,5 +164,8 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
       .click({ force: true });
 
     cy.log('✅ Провайдер успешно удален!');
+    
+    // ФИКСИРУЕМ ПОЛНЫЙ УСПЕХ ТЕСТА (Для GitHub Actions)
+    cy.writeFile('auth_api_status.txt', '3');
   });
 });
