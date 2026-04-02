@@ -115,8 +115,10 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
       .should('be.visible')
       .click();
 
-    cy.log('⚠️ Ввод суммы активации');
-    cy.get('input[placeholder="Введите сумму"]')
+cy.log('⚠️ Ввод суммы активации');
+    cy.contains(/Сумма Активации|Activation Amount/i)
+      .parent()
+      .find('input')
       .should('be.visible')
       .type('1', { delay: 50 });
 
