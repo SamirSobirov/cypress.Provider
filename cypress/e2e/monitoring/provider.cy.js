@@ -1,5 +1,7 @@
-Cypress.on('uncaught:exception', (err, runnable) => {
-  return false;
+Cypress.on('uncaught:exception', (err) => {
+  if (err.message.includes('ResizeObserver')) {
+    return false; // игнорим только мусор
+  }
 });
 
 const generateLetters = (len) => {
@@ -39,16 +41,23 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
     cy.get('input[type="text"]', { timeout: 15000 })
       .should('be.visible')
       .focus()
-      .type(`{selectall}{backspace}${Cypress.env('LOGIN_EMAIL')}`, { delay: 50, log: false }); 
+      .type(`{selectall}{backspace}${cy.env('LOGIN_EMAIL')}`, { delay: 50, log: false }); 
 
     cy.get('input[type="password"]')
       .should('be.visible')
       .focus()
-      .type(`{selectall}{backspace}${Cypress.env('LOGIN_PASSWORD')}`, { delay: 50, log: false });
+      .type(`{selectall}{backspace}${cy.env('LOGIN_PASSWORD')}`, { delay: 50, log: false });
 
     cy.get('button.sign-in-page__submit').click({ force: true });
 
-    cy.wait('@apiAuth', { timeout: 30000 });
+    cy.wait('@apiAuth', { timeout: 30000 }).then((interception) => {
+  const status = interception.response?.statusCode || 500;
+
+  if (status >= 400) {
+    cy.writeFile('auth_api_status.txt', `ERROR_${status}`);
+    throw new Error(`Auth failed: ${status}`);
+  }
+});
     cy.url({ timeout: 30000 }).should('not.include', '/sign-in');
 
     cy.log('⚠️ Переход в раздел Провайдеры');
