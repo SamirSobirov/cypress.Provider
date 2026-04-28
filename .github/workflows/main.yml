@@ -26,7 +26,6 @@ jobs:
         env:
           CYPRESS_LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           CYPRESS_LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
-        continue-on-error: true
 
       - name: Parse Diagnostic Data
         if: always()
