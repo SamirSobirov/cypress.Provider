@@ -36,7 +36,7 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
     cy.clearLocalStorage();
     cy.window().then((win) => { win.sessionStorage.clear(); });
 
-    cy.visit('https://metatrip-system.uz/sign-in', { timeout: 30000 });
+    cy.visit('https://stage.metatrip-system.uz/sign-in', { timeout: 30000 });
     
     // НОВЫЙ ПОДХОД: Асинхронное получение переменных для авторизации
     cy.env(['LOGIN_EMAIL', 'LOGIN_PASSWORD']).then((envVars) => {
