@@ -36,28 +36,32 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
     cy.clearLocalStorage();
     cy.window().then((win) => { win.sessionStorage.clear(); });
 
-    cy.visit('https://dev.metatrip.uz/uz/sign-in', { timeout: 30000 });
+    cy.visit('https://metatrip-system.uz/sign-in', { timeout: 30000 });
     
-    cy.get('input[type="text"]', { timeout: 15000 })
-      .should('be.visible')
-      .focus()
-      .type(`{selectall}{backspace}${cy.env('LOGIN_EMAIL')}`, { delay: 50, log: false }); 
+    // НОВЫЙ ПОДХОД: Асинхронное получение переменных для авторизации
+    cy.env(['LOGIN_EMAIL', 'LOGIN_PASSWORD']).then((envVars) => {
+      cy.get('input[type="text"]', { timeout: 15000 })
+        .should('be.visible')
+        .focus()
+        .type(`{selectall}{backspace}${envVars.LOGIN_EMAIL}`, { delay: 50, log: false }); 
 
-    cy.get('input[type="password"]')
-      .should('be.visible')
-      .focus()
-      .type(`{selectall}{backspace}${cy.env('LOGIN_PASSWORD')}`, { delay: 50, log: false });
+      cy.get('input[type="password"]')
+        .should('be.visible')
+        .focus()
+        .type(`{selectall}{backspace}${envVars.LOGIN_PASSWORD}`, { delay: 50, log: false });
 
-    cy.get('button.sign-in-page__submit').click({ force: true });
+      cy.get('button.sign-in-page__submit').click({ force: true });
+    });
 
     cy.wait('@apiAuth', { timeout: 30000 }).then((interception) => {
-  const status = interception.response?.statusCode || 500;
+      const status = interception.response?.statusCode || 500;
 
-  if (status >= 400) {
-    cy.writeFile('auth_api_status.txt', `ERROR_${status}`);
-    throw new Error(`Auth failed: ${status}`);
-  }
-});
+      if (status >= 400) {
+        cy.writeFile('auth_api_status.txt', `ERROR_${status}`);
+        throw new Error(`Auth failed: ${status}`);
+      }
+    });
+    
     cy.url({ timeout: 30000 }).should('not.include', '/sign-in');
 
     cy.log('⚠️ Переход в раздел Провайдеры');
@@ -124,7 +128,7 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
       .should('be.visible')
       .click();
 
-cy.log('⚠️ Ввод суммы активации');
+    cy.log('⚠️ Ввод суммы активации');
     cy.contains(/Сумма Активации|Activation Amount/i)
       .parent()
       .find('input')

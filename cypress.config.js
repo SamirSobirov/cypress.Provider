@@ -6,7 +6,7 @@ module.exports = defineConfig({
   allowCypressEnv: false, // ✅ убирает warning
 
   e2e: {
-    baseUrl: 'https://dev.metatrip.uz',
+    baseUrl: 'https://metatrip-system.uz',
     watchForFileChanges: false,
     viewportWidth: 1280,
     viewportHeight: 800,
