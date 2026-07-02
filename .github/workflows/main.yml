@@ -20,7 +20,6 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          # ВАЖНО: Укажи точный путь к твоему файлу теста провайдеров
           spec: cypress/e2e/monitoring/provider.cy.js 
           browser: chrome
         env:
@@ -36,13 +35,15 @@ jobs:
             RESULT="UNKNOWN"
           fi
 
-          S1="⏳"; S2="⏳"; S3="⏳"; STATUS="🔴 Failed"
+          # Инициализируем 4 шага часиками
+          S1="⏳"; S2="⏳"; S3="⏳"; S4="⏳"; STATUS="🔴 Failed"
 
           case "$RESULT" in
             "0") S1="❌"; STATUS="❌ UI Crash at Auth" ;;
             "1") S1="✅"; S2="❌"; STATUS="⚠️ Failed at Create" ;;
-            "2") S1="✅"; S2="✅"; S3="❌"; STATUS="⚠️ Failed at Delete" ;;
-            "3") S1="✅"; S2="✅"; S3="✅"; STATUS="🟢 Success" ;;
+            "2") S1="✅"; S2="✅"; S3="❌"; STATUS="⚠️ Failed at Balance" ;;
+            "3") S1="✅"; S2="✅"; S3="✅"; S4="❌"; STATUS="⚠️ Failed at Delete" ;;
+            "4") S1="✅"; S2="✅"; S3="✅"; S4="✅"; STATUS="🟢 Success" ;;
             ERROR_*) S1="🆘 ${RESULT}"; STATUS="🔴 Auth API Error" ;;
             *) STATUS="❌ Unknown Failure / File Missing" ;;
           esac
@@ -50,6 +51,7 @@ jobs:
           echo "S1=$S1" >> $GITHUB_ENV
           echo "S2=$S2" >> $GITHUB_ENV
           echo "S3=$S3" >> $GITHUB_ENV
+          echo "S4=$S4" >> $GITHUB_ENV
           echo "FINAL_STATUS=$STATUS" >> $GITHUB_ENV
 
       - name: Upload Cypress Screenshots & Videos
@@ -81,4 +83,5 @@ jobs:
             **Flow Steps:**
             1. Auth: ${{ env.S1 }}
             2. Create: ${{ env.S2 }}
-            3. Delete: ${{ env.S3 }}
+            3. Balance: ${{ env.S3 }}
+            4. Delete: ${{ env.S4 }}

@@ -146,20 +146,47 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
     // ФИКСИРУЕМ УСПЕХ ШАГА 2 (Для GitHub Actions)
     cy.writeFile('auth_api_status.txt', '2');
 
+// =========================================================
+    // ШАГ 3: РЕДАКТИРОВАНИЕ БАЛАНСА ПРОВАЙДЕРА
     // =========================================================
-    // ШАГ 3: УДАЛЕНИЕ ПРОВАЙДЕРА
-    // =========================================================
-    cy.log('🟢 ШАГ 3: УДАЛЕНИЕ ПРОВАЙДЕРА');
+    cy.log('🟢 ШАГ 3: РЕДАКТИРОВАНИЕ БАЛАНСА ПРОВАЙДЕРА');
 
-    cy.get('.p-dialog').should('not.exist'); 
-    cy.wait(2000);
-
-    cy.log('⚠️ Открытие деталей провайдера');
+    // 1. Переход в детали созданного провайдера по клику на action-btn (Скриншот image_6e2fc1.jpg)
     cy.contains('tr', providerName, { timeout: 15000 })
       .find('button.action-btn')
       .should('be.visible')
       .click({ force: true });
 
+    cy.url({ timeout: 20000 }).should('include', '/partners/');
+
+    // 2. Клик на кнопку "Пополнить баланс" (Скриншот image_6e3041.jpg)
+    cy.contains('button.app-button', /Пополнить баланс|Top up balance/i)
+      .should('be.visible')
+      .click({ force: true });
+
+    // 3. Ожидание модалки и ввод суммы "1" (Скриншот image_6e3324.jpg)
+    cy.get('.p-dialog input')
+      .should('be.visible')
+      .focus()
+      .type('1', { delay: 50 });
+
+    // 4. Подтверждение пополнения (Скриншот image_6e3366.jpg)
+    cy.get('.p-dialog button')
+      .contains(/Пополнить|Top up/i)
+      .should('be.visible')
+      .click({ force: true });
+
+    // Ожидаем закрытия модального окна баланса
+    cy.get('.p-dialog').should('not.exist');
+    cy.log('✅ Баланс провайдера успешно обновлен!');
+
+
+    // =========================================================
+    // ШАГ 4: УДАЛЕНИЕ ПРОВАЙДЕРА
+    // =========================================================
+    cy.log('🟢 ШАГ 4: УДАЛЕНИЕ ПРОВАЙДЕРА');
+
+    // ТАК КАК МЫ УЖЕ ВНУТРИ ДЕТАЛЕЙ, СРАЗУ ЖМЕМ "НАСТРОЙКИ"
     cy.log('⚠️ Переход в Настройки');
     cy.get('button.app-button--secondary')
       .contains(/Настройки|Settings/i)
