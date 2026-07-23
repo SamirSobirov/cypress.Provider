@@ -1,6 +1,6 @@
 Cypress.on('uncaught:exception', (err) => {
   if (err.message.includes('ResizeObserver')) {
-    return false; // игнорим только мусор
+    return false; 
   }
 });
 
@@ -36,7 +36,7 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
     cy.clearLocalStorage();
     cy.window().then((win) => { win.sessionStorage.clear(); });
 
-    cy.visit('https://stage.metatrip-system.uz/sign-in', { timeout: 30000 });
+    cy.visit('https://b2b.metatrip.asia/sign-in', { timeout: 30000 });
     
     // НОВЫЙ ПОДХОД: Асинхронное получение переменных для авторизации
     cy.env(['LOGIN_EMAIL', 'LOGIN_PASSWORD']).then((envVars) => {
@@ -207,7 +207,6 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
 
     cy.log('✅ Провайдер успешно удален!');
     
-    // ФИКСИРУЕМ ПОЛНЫЙ УСПЕХ ТЕСТА (Для GitHub Actions)
     cy.writeFile('auth_api_status.txt', '3');
   });
 });
