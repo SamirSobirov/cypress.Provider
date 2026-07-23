@@ -118,13 +118,19 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
 
     cy.log('✅ Первый шаг заполнения провайдера завершен');
 
-    // 6. Выбор валюты - УБРАНЫ ПРОБЕЛЫ В РЕГУЛЯРКЕ
+    // 6. Выбор валюты - недавно добавили инпут поиска внутри дропдауна
     cy.contains('.p-select', /Валюта не выбрана|Currency not selected/i)
       .should('be.visible')
-      .click(); 
+      .click();
 
-    cy.get('.p-select-panel, [role="listbox"]')
-      .contains(/^USD$/)
+    // Вписываем USD в поиск валюты
+    cy.get('.p-select-filter, input[role="searchbox"]', { timeout: 10000 })
+      .should('be.visible')
+      .type('USD', { delay: 50 });
+
+    // Кликаем на первый элемент отфильтрованного списка
+    cy.get('.p-select-list [role="option"], .p-select-option')
+      .first()
       .should('be.visible')
       .click();
 
