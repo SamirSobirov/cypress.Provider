@@ -78,71 +78,87 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
     // =========================================================
     cy.log('🟢 ШАГ 2: ЗАПОЛНЕНИЕ ФОРМЫ ПРОВАЙДЕРА');
 
-    cy.get('button.app-button--primary')
+    // Таймаут ожидания элементов (в CU/GitHub Actions UI отрисовывается медленнее)
+    const UI_TIMEOUT = 20000;
+
+    cy.get('button.app-button--primary', { timeout: UI_TIMEOUT })
       .contains(/Добавить провайдер|Add Provider/i)
       .should('be.visible')
       .click({ force: true });
-      
-    cy.wait(2000); 
+
+    // Ждём полного открытия диалога перед вводом
+    cy.get('.p-dialog', { timeout: UI_TIMEOUT }).should('be.visible');
+    cy.wait(1500);
 
     // 1. Название провайдера
-    cy.get('.p-dialog input').eq(0)
+    cy.get('.p-dialog input', { timeout: UI_TIMEOUT }).eq(0)
       .should('be.visible')
       .type(providerName, { delay: 50 });
+    cy.wait(500);
 
     // 2. Типы продуктов (Дропдаун) - УБРАНЫ ПРОБЕЛЫ В РЕГУЛЯРКЕ
-    cy.contains('.p-select', /Выберите типы продуктов|Select product types/i)
-      .should('be.visible')
-      .click(); 
-
-    cy.get('.p-select-panel, .p-select-overlay, [role="listbox"]')
-      .contains(/Перелёты|Flights/i)
+    cy.contains('.p-select', /Выберите типы продуктов|Select product types/i, { timeout: UI_TIMEOUT })
       .should('be.visible')
       .click();
 
-    // 3. Тег 
-    cy.get('.p-dialog input').eq(1)
+    // Ждём, пока раскроется панель со списком
+    cy.wait(800);
+    cy.get('.p-select-panel, .p-select-overlay, [role="listbox"]', { timeout: UI_TIMEOUT })
+      .contains(/Перелёты|Flights/i)
+      .should('be.visible')
+      .click();
+    cy.wait(500);
+
+    // 3. Тег
+    cy.get('.p-dialog input', { timeout: UI_TIMEOUT }).eq(1)
       .should('be.visible')
       .type(providerTag, { delay: 50 });
+    cy.wait(500);
 
     // 4. Кнопка "Продолжить" (первая)
-    cy.get('button.app-button--primary')
+    cy.get('button.app-button--primary', { timeout: UI_TIMEOUT })
       .contains(/Продолжить|Continue/i)
       .should('be.visible')
       .click({ force: true });
+    cy.wait(1000);
 
     // 5. Кнопка "Продолжить" (вторая)
-    cy.get('.p-dialog').contains('button', /Продолжить|Continue/i)
+    cy.get('.p-dialog', { timeout: UI_TIMEOUT }).contains('button', /Продолжить|Continue/i)
       .should('be.visible')
       .click({ force: true });
+    cy.wait(1000);
 
     cy.log('✅ Первый шаг заполнения провайдера завершен');
 
     // 6. Выбор валюты - недавно добавили инпут поиска внутри дропдауна
-    cy.contains('.p-select', /Валюта не выбрана|Currency not selected/i)
+    cy.contains('.p-select', /Валюта не выбрана|Currency not selected/i, { timeout: UI_TIMEOUT })
       .should('be.visible')
       .click();
 
-    // Вписываем USD в поиск валюты
-    cy.get('.p-select-filter, input[role="searchbox"]', { timeout: 10000 })
+    // Ждём открытия дропдауна и появления инпута поиска
+    cy.wait(800);
+    cy.get('.p-select-filter, input[role="searchbox"]', { timeout: UI_TIMEOUT })
       .should('be.visible')
       .type('USD', { delay: 50 });
 
     // Кликаем на первый элемент отфильтрованного списка
-    cy.get('.p-select-list [role="option"], .p-select-option')
+    cy.wait(500);
+    cy.get('.p-select-list [role="option"], .p-select-option', { timeout: UI_TIMEOUT })
       .first()
       .should('be.visible')
       .click();
+    cy.wait(500);
 
     cy.log('⚠️ Ввод суммы активации');
-    cy.contains(/Сумма Активации|Activation Amount/i)
+    cy.contains(/Сумма Активации|Activation Amount/i, { timeout: UI_TIMEOUT })
       .parent()
       .find('input')
       .should('be.visible')
       .type('1', { delay: 50 });
+    cy.wait(500);
 
     cy.log('⚠️ Финальное сохранение провайдера');
-    cy.get('button.app-button--sm')
+    cy.get('button.app-button--sm', { timeout: UI_TIMEOUT })
       .contains(/Добавить|Add/i)
       .should('be.visible')
       .click({ force: true });
