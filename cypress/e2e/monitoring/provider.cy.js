@@ -122,9 +122,23 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
       .click({ force: true });
     cy.wait(1000);
 
-    // 5. Кнопка "Продолжить" (вторая)
+    // 4.5. НОВЫЙ ШАГ: Выбор системы бронирования
+    // Без выбора системы кнопка "Продолжить" остаётся заблокированной (app-button--disabled)
+    cy.get('.p-dialog', { timeout: UI_TIMEOUT })
+      .contains(/Выберите систему бронирования|Select booking system/i)
+      .should('be.visible');
+
+    // Выбираем первую доступную систему бронирования (LINER / MYAGENT / MOCK)
+    cy.get('.p-dialog', { timeout: UI_TIMEOUT })
+      .contains(/LINER|MYAGENT|MOCK/i)
+      .should('be.visible')
+      .click({ force: true });
+    cy.wait(1000);
+
+    // 5. Кнопка "Продолжить" (вторая) — ждём, пока станет активной после выбора системы
     cy.get('.p-dialog', { timeout: UI_TIMEOUT }).contains('button', /Продолжить|Continue/i)
       .should('be.visible')
+      .should('not.have.class', 'app-button--disabled')
       .click({ force: true });
     cy.wait(1000);
 
