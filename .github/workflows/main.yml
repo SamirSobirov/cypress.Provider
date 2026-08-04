@@ -75,7 +75,7 @@ jobs:
           message: |
             ${{ github.event_name == 'schedule' && '📢 **Hourly Monitoring**' || '👤 **Manual Testing**' }}
             
-            📂 **Module:** Providers Management
+            📂 **Module:** B2B Providers Monitoring
             📊 **Status:** ${{ env.FINAL_STATUS }}
 
             **Flow Steps:**
