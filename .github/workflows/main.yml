@@ -2,7 +2,7 @@ name: Providers Management
 
 on:
   schedule:
-    - cron: '0 */5 * * *'
+    - cron: '0 */8 * * *'
   workflow_dispatch:
     inputs:
       user_chat_id:
