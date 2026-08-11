@@ -128,9 +128,9 @@ describe('Providers Management Flow', { pageLoadTimeout: 120000 }, () => {
       .contains(/Выберите систему бронирования|Select booking system/i)
       .should('be.visible');
 
-    // Выбираем первую доступную систему бронирования (LINER / MYAGENT / MOCK)
+    // Выбираем систему бронирования TPCONNECT (запасные варианты — на случай смены списка)
     cy.get('.p-dialog', { timeout: UI_TIMEOUT })
-      .contains(/LINER|MYAGENT|MOCK/i)
+      .contains(/TPCONNECT|DRCT|LINER|MYAGENT/i)
       .should('be.visible')
       .click({ force: true });
     cy.wait(1000);
